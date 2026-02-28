@@ -100,6 +100,21 @@ public class ClubController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updateClub(@PathVariable String id, @RequestBody Club clubUpdate) {
         try {
+            // Load current club to determine how it is secured
+            Club existingClub = firebaseService.getClub(id);
+            if (existingClub == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // If the existing club uses the literal "none" as an admin key, treat it as public/editable
+            if (existingClub.getAdminKey() != null && "none".equals(existingClub.getAdminKey())) {
+                // Ensure we write back to the same document
+                clubUpdate.setId(id);
+                firebaseService.createClub(clubUpdate);
+                return ResponseEntity.ok("Update successful (public club)");
+            }
+
+            // Otherwise, require a stored secure key and validate it
             Key secureKey = firebaseService.getKeyByPurpose(id);
 
             if (secureKey == null) {
@@ -112,6 +127,8 @@ public class ClubController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Admin Key");
             }
 
+            // Ensure we write back to the same document
+            clubUpdate.setId(id);
             firebaseService.createClub(clubUpdate);
 
             return ResponseEntity.ok("Update successful");

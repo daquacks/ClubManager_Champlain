@@ -148,4 +148,17 @@ public class FirebaseService {
         DocumentSnapshot doc = docRef.get().get();
         return doc.exists() ? doc.toObject(Key.class) : null;
     }
+
+    public String updateClub(String id, Club clubUpdate) throws ExecutionException, InterruptedException {
+        // Ensure the ID is set to the document we intend to update
+        clubUpdate.setId(id);
+
+        // .set() with the specific document ID will overwrite the existing data
+        ApiFuture<WriteResult> future = getFirestore()
+                .collection("clubs")
+                .document(id)
+                .set(clubUpdate);
+
+        return future.get().getUpdateTime().toString();
+    }
 }

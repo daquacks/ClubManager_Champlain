@@ -38,7 +38,7 @@ public class Club {
         return adminKey;
     }
     public void setAdminKey(String key) {
-        this.adminKey = adminKey;
+        this.adminKey = key;
     }
 
     public String getLogoUrl() { return logoUrl; }
