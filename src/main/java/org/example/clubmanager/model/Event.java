@@ -1,80 +1,45 @@
 package org.example.clubmanager.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Event {
     private String id;
+    private String clubId;
     private String title;
     private String description;
-    private String startTime; // ISO string
-    private String endTime; // ISO string
+    private Date startTime;
+    private Date endTime;
     private String location;
-    private String clubId;
 
     public Event() {}
 
-    public Event(String title, String description, String startTime, String endTime, String location, String clubId) {
+    public Event(String clubId, String title, String description, Date startTime, Date endTime, String location) {
+        this.clubId = clubId;
         this.title = title;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
-        this.clubId = clubId;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getClubId() { return clubId; }
+    public void setClubId(String clubId) { this.clubId = clubId; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getDescription() {
-        return description;
-    }
+    public Date getStartTime() { return startTime; }
+    public void setStartTime(Date startTime) { this.startTime = startTime; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Date getEndTime() { return endTime; }
+    public void setEndTime(Date endTime) { this.endTime = endTime; }
 
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getClubId() {
-        return clubId;
-    }
-
-    public void setClubId(String clubId) {
-        this.clubId = clubId;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 }

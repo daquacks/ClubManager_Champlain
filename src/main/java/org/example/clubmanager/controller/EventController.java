@@ -1,9 +1,8 @@
 package org.example.clubmanager.controller;
 
 import org.example.clubmanager.model.Event;
-import org.example.clubmanager.service.CalendarService;
+import org.example.clubmanager.service.FirebaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,24 +13,20 @@ import java.util.concurrent.ExecutionException;
 public class EventController {
 
     @Autowired
-    private CalendarService calendarService;
+    private FirebaseService firebaseService;
 
     @PostMapping
-    public ResponseEntity<String> createEvent(@RequestBody Event event) {
-        try {
-            String eventId = calendarService.createEvent(event);
-            return ResponseEntity.ok(eventId);
-        } catch (ExecutionException | InterruptedException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+    public String createEvent(@RequestBody Event event) throws ExecutionException, InterruptedException {
+        return firebaseService.createEvent(event);
+    }
+
+    @GetMapping
+    public List<Event> getAllEvents() throws ExecutionException, InterruptedException {
+        return firebaseService.getAllEvents();
     }
 
     @GetMapping("/club/{clubId}")
-    public ResponseEntity<List<Event>> getEventsForClub(@PathVariable String clubId) {
-        try {
-            return ResponseEntity.ok(calendarService.getEventsForClub(clubId));
-        } catch (ExecutionException | InterruptedException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    public List<Event> getEventsByClub(@PathVariable String clubId) throws ExecutionException, InterruptedException {
+        return firebaseService.getEventsByClub(clubId);
     }
 }

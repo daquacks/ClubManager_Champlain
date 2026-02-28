@@ -66,8 +66,8 @@
         </div>
 
         <div class="form-group">
-            <label for="adminUid">Admin User ID (Owner)</label>
-            <input type="text" id="adminUid" name="adminUid" readonly style="background-color: #eee;">
+            <label for="adminKey">Admin Key</label>
+            <input type="text" id="adminKey" name="adminKey" placeholder="Authentication Key">
         </div>
 
         <button type="submit" class="btn-save">Save Changes</button>
@@ -87,7 +87,6 @@
             document.getElementById('overview').value = club.overview || '';
             document.getElementById('description').value = club.description || '';
             document.getElementById('logoUrl').value = club.logoUrl || '';
-            document.getElementById('adminUid').value = club.adminUid || '';
 
             document.getElementById('loading-msg').style.display = 'none';
         })
@@ -106,18 +105,20 @@
             overview: document.getElementById('overview').value,
             description: document.getElementById('description').value,
             logoUrl: document.getElementById('logoUrl').value,
-            adminUid: document.getElementById('adminUid').value
+            adminKey: document.getElementById('adminKey').value
         };
 
         fetch(`/api/clubs/${clubId}`, {
-            method: 'PUT', // Use PUT for updates
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)
         })
             .then(response => {
                 if (response.ok) {
                     alert("Club updated successfully!");
-                    window.location.href = `/clubs/${clubId}`; // Redirect back to details
+                    window.location.href = `/clubs/${clubId}`;
+                } else if (response.status === 401) {
+                    alert("Invalid Admin Key! You are not authorized to edit this club.");
                 } else {
                     alert("Error updating club.");
                 }

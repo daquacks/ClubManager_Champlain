@@ -3,9 +3,7 @@ package org.example.clubmanager.service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import org.example.clubmanager.model.Club;
-import org.example.clubmanager.model.Post;
-import org.example.clubmanager.model.User;
+import org.example.clubmanager.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -90,5 +88,64 @@ public class FirebaseService {
             posts.add(document.toObject(Post.class));
         }
         return posts;
+    }
+
+    // --- Event Operations ---
+    public String createEvent(Event event) throws ExecutionException, InterruptedException {
+        if (event.getId() == null) {
+            DocumentReference docRef = getFirestore().collection("events").document();
+            event.setId(docRef.getId());
+        }
+        ApiFuture<WriteResult> future = getFirestore().collection("events").document(event.getId()).set(event);
+        return future.get().getUpdateTime().toString();
+    }
+
+    public List<Event> getEventsByClub(String clubId) throws ExecutionException, InterruptedException {
+        ApiFuture<QuerySnapshot> future = getFirestore().collection("events").whereEqualTo("clubId", clubId).get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        List<Event> events = new ArrayList<>();
+        for (DocumentSnapshot document : documents) {
+            events.add(document.toObject(Event.class));
+        }
+        return events;
+    }
+
+    public List<Event> getAllEvents() throws ExecutionException, InterruptedException {
+        ApiFuture<QuerySnapshot> future = getFirestore().collection("events").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        List<Event> events = new ArrayList<>();
+        for (DocumentSnapshot document : documents) {
+            events.add(document.toObject(Event.class));
+        }
+        return events;
+    }
+
+    // --- Key Operations ---
+    public String createKey(Key key) throws ExecutionException, InterruptedException {
+        // Use the purpose (e.g., Club ID) as the document ID so it's easy to find
+        ApiFuture<WriteResult> future = getFirestore()
+                .collection("keys")
+                .document(key.getPurpose())
+                .set(key);
+
+        return future.get().getUpdateTime().toString();
+    }
+
+    public List<Key> getKeys() throws ExecutionException, InterruptedException {
+        ApiFuture<QuerySnapshot> future = getFirestore().collection("keys").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        List<Key> keys = new ArrayList<>();
+
+        for (DocumentSnapshot document : documents) {
+            keys.add(document.toObject(Key.class));
+        }
+        return keys;
+    }
+
+    // Helper to find one specific key by purpose
+    public Key getKeyByPurpose(String purpose) throws ExecutionException, InterruptedException {
+        DocumentReference docRef = getFirestore().collection("keys").document(purpose);
+        DocumentSnapshot doc = docRef.get().get();
+        return doc.exists() ? doc.toObject(Key.class) : null;
     }
 }

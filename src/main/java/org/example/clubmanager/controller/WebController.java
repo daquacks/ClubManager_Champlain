@@ -27,6 +27,21 @@ public class WebController {
         return "club";
     }
 
+    @GetMapping("/club-edit/{id}")
+    public String clubEdit() {
+        return "club-edit";
+    }
+
+    @GetMapping("/club-create") //Need to do the manag
+    public String clubCreate(){
+        return "club-create";
+    }
+
+    @GetMapping("/events")
+    public String events() {
+        return "events";
+    }
+
     @GetMapping("/test")
     @ResponseBody
     public String test() {

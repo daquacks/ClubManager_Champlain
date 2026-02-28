@@ -1,20 +1,55 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
 <div th:fragment="navbar">
     <style>
-        .nav-shared { display: flex; justify-content: center; background-color: #444; padding: 0.8rem; }
-        .nav-shared a { color: #fff; text-decoration: none; margin: 0 1.5rem; font-weight: bold; }
+        .nav-shared {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            background-color: #444;
+            padding: 0.8rem 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .nav-center-links {
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-right-link {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .nav-shared a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
         .nav-shared a:hover { color: #679b9b; }
+
+        .nav-shared .nav-create-page {
+            color: #888;
+            font-weight: normal;
+            margin: 0;
+            font-size: 0.9rem;
+        }
     </style>
+
     <nav class="nav-shared">
-        <a href="/">Home</a>
-        <a href="/clubs">All Clubs</a>
-        <a href="/create-club">Create Club</a>
-        <a href="/login">Login</a>
+        <div class="nav-left-spacer"></div>
+
+        <div class="nav-center-links">
+            <a href="/">Home</a>
+            <a href="/clubs">Clubs</a>
+            <a href="https://champlaincollege-st-lambert-lea.omnivox.ca">Omnivox</a>
+            <a href="https://champlainsaintlambert.ca">Champlain</a>
+        </div>
+
+        <div class="nav-right-link">
+            <a class="nav-create-page" href="/club-create">Add Club</a>
+        </div>
     </nav>
 </div>
-
-</body>
-</html>

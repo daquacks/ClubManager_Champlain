@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Upcoming Events - Club Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #333; color: #fff; padding: 1rem; text-align: center; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 1rem; background: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .event-card {
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: #fafafa;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .event-date {
+            flex: 0 0 80px;
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .event-date .month {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .event-date .day {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .event-details h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .event-details p {
+            margin: 0.25rem 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Upcoming Events</h1>
+</header>
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+    <div id="event-list">
+        <p>Loading events...</p>
+    </div>
+</div>
+
+<script>
+    // Fetch events from the API and display them
+    fetch('/api/events')
+        .then(response => response.json())
+        .then(events => {
+            const eventList = document.getElementById('event-list');
+            eventList.innerHTML = ''; // Clear loading message
+
+            if (events.length === 0) {
+                eventList.innerHTML = '<p>No upcoming events found.</p>';
+                return;
+            }
+            
+            // Sort events by start time
+            events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+            events.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'event-card';
+
+                const date = new Date(event.startTime);
+                const month = date.toLocaleString('default', { month: 'short' });
+                const day = date.getDate();
+
+                card.innerHTML = `
+                    <div class="event-date">
+                        <div class="month">${month}</div>
+                        <div class="day">${day}</div>
+                    </div>
+                    <div class="event-details">
+                        <h3>${event.title}</h3>
+                        <p><strong>Club:</strong> ${event.clubId}</p> <!-- We might want to fetch club name later -->
+                        <p><strong>Location:</strong> ${event.location}</p>
+                        <p><strong>Time:</strong> ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
+                `;
+                eventList.appendChild(card);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching events:', error);
+            document.getElementById('event-list').innerHTML = '<p>Error loading events.</p>';
+        });
+</script>
+
+</body>
+</html>
