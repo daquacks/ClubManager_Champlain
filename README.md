@@ -1,7 +1,7 @@
 # Club Manager
 ## Introduction
-Have you ever tried looking for clubs in Champlain, going to their site, only to find outdated information?
-Have you ever participated in a club, and missed an event, because of poor communication within the group?
+Have you ever tried looking for clubs in Champlain, going to their site, only to find outdated information? <br>
+Have you ever participated in a club, and missed an event, because of poor communication within the group? <br>
 Hell, there's barely even any information about the existing clubs at Champlain on Omnivox.
 
 Well, the Club Manager fixes the current messy state of club-accessibility for those that are seeking for a new group to join, curious about other clubs, or even for executives seeking to announce important events to their members. 
@@ -25,5 +25,21 @@ Well, the Club Manager fixes the current messy state of club-accessibility for t
 * View the list of all the admin keys.
 
 *Must use a manager key to access these features.
+
+## Tools
+### Languages:
+- **Java**
+- **HTML**
+- **CSS**
+- **JavaScript**
+
+### API's:
+- **Spring Boot:** connects the backend with the frontend
+- **ThymeLeaf:** establishes connection between Spring Boot and HTML
+- **Firebase:** database for the clubs and the keys
+- **OpenPDF:** (self-explanatory)
+- **Discord Webhooks:** Sends an automated message to the discord server with the details of the Club (when clicking on the purple "share" button).
+
+
 
 ## Implementation
