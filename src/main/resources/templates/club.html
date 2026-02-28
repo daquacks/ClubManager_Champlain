@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Club Details | Hub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #333; color: #fff; padding: 1.5rem; text-align: center; }
+        /*nav { display: flex; justify-content: center; background-color: #444; padding: 0.5rem; }*/
+        /*nav a { color: #fff; text-decoration: none; margin: 0 1rem; }*/
+        /*nav a:hover { text-decoration: underline; }*/
+
+        .container { max-width: 900px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        .club-info { border-bottom: 2px solid #679b9b; margin-bottom: 2rem; padding-bottom: 1rem; }
+        .club-info h2 { color: #333; margin-bottom: 10px; }
+        .club-info p { color: #555; line-height: 1.6; font-size: 1.1rem; }
+
+        .event-section h3 { color: #333; border-left: 5px solid #679b9b; padding-left: 10px; }
+
+        .event-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s;
+        }
+        .event-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .event-card h4 { margin: 0 0 10px 0; color: #007bff; font-size: 1.2rem; }
+        .event-card p { margin: 0; color: #666; line-height: 1.4; }
+
+        .loading { font-style: italic; color: #888; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="header-title">Club Hub</h1>
+</header>
+
+<!--<nav>-->
+<!--    <a href="/">Home</a>-->
+<!--    <a href="/clubs">All Clubs</a>-->
+<!--    <a href="/create-club">Create Club</a>-->
+<!--</nav>-->
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+    <div class="club-info">
+        <h2 id="club-name">Loading...</h2>
+        <p id="club-description">Fetching description...</p>
+    </div>
+
+    <div class="event-section">
+        <h3>Upcoming Events</h3>
+        <div id="event-list">
+            <p class="loading">Loading events...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Extract the ID from the URL: /clubs/12345
+    const pathParts = window.location.pathname.split('/');
+    const clubId = pathParts[pathParts.length - 1];
+
+    // Fetch the specific Club data
+    fetch(`/api/clubs/${clubId}`)
+        .then(res => res.json())
+        .then(club => {
+            document.getElementById('header-title').innerText = club.name;
+            document.getElementById('club-name').innerText = club.name;
+            document.getElementById('club-description').innerText = club.description;
+
+            // Now fetch the events for this club
+            return fetch(`/api/clubs/${clubId}/events`);
+        })
+        .then(res => res.json())
+        .then(events => {
+            const eventList = document.getElementById('event-list');
+            eventList.innerHTML = ''; // Clear loading text
+
+            if (events.length === 0) {
+                eventList.innerHTML = '<p>No events scheduled for this club yet.</p>';
+                return;
+            }
+
+            events.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                card.innerHTML = `
+                    <h4>${event.title}</h4>
+                    <p>${event.description}</p>
+                `;
+                eventList.appendChild(card);
+            });
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+            document.getElementById('event-list').innerHTML = '<p>Error loading content.</p>';
+        });
+</script>
+
+</body>
+</html>

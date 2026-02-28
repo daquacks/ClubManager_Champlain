@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Club Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background-color: #333; color: #fff; padding: 1rem; text-align: center; }
+        /*nav { display: flex; justify-content: center; background-color: #444; padding: 0.5rem; }*/
+        /*!*nav a { color: #fff; text-decoration: none; margin: 0 1rem; }*!*/
+        /*nav a:hover { text-decoration: underline; }*/
+        .container { max-width: 75vw; margin: 2rem auto; padding: 1rem; background: #d4e0f1; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        #club-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            min-width:75vw;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .club-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #c1d2d2;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .club-card:hover {
+            transform: translateY(-5px) scaleX(120%) scaleY(120%);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        .club-card h3 { 
+            margin-top: 0; 
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .club-card p {
+            color: #666;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Club Manager</h1>
+</header>
+
+<!--<nav>-->
+<!--    <a href="/">Home</a>-->
+<!--    <a href="/clubs">All Clubs</a>-->
+<!--    <a href="/create-club">Create Club</a>-->
+<!--    <a href="/login">Login</a>-->
+<!--</nav>-->
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+    <h2>Welcome to the School Club Manager</h2>
+    <p>Find clubs, join events, and connect with other students!</p>
+
+    <h3>Featured Clubs</h3>
+    <div id="club-list">
+        <!-- Clubs will be loaded here via JavaScript -->
+        <p>Loading clubs...</p>
+    </div>
+</div>
+
+<script>
+    // Fetch clubs from the API and display them
+    fetch('/api/clubs')
+        .then(response => response.json())
+        .then(clubs => {
+            const clubList = document.getElementById('club-list');
+            clubList.innerHTML = ''; // Clear loading message
+
+            if (clubs.length === 0) {
+                clubList.innerHTML = '<p>No clubs found.</p>';
+                return;
+            }
+
+            clubs.forEach(club => {
+                const card = document.createElement('div');
+                card.className = 'club-card';
+                card.innerHTML = `
+                    <h3 style="text-align: center;">${club.name}</h3>
+                    <p style="text-align: center;">${club.overview || club.description || "No overview available"}</p>
+                    <a href="/clubs/${club.id}" class="btn">View Details</a>
+                `;
+                clubList.appendChild(card);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching clubs:', error);
+            document.getElementById('club-list').innerHTML = '<p>Error loading clubs.</p>';
+        });
+</script>
+
+</body>
+</html>
