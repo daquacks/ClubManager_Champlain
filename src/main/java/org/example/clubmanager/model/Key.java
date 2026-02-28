@@ -1,5 +1,7 @@
 package org.example.clubmanager.model;
 
+import com.google.cloud.firestore.annotation.Exclude;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -10,7 +12,9 @@ public class Key {
     private String encryptedKey;
     private String purpose;
 
+    @Exclude
     private static final String MASTER_SECRET = "46515035950334719375791987487874";
+    @Exclude
     private static final String RAW_MASTER_KEY = "F9485D439D87A5FA";
     
     public Key() {}

@@ -15,8 +15,10 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
+        // Looks for serviceAccountKey.json and takes its API information
         ClassPathResource resource = new ClassPathResource("serviceAccountKey.json");
-        
+
+        // Self-explanatory
         if (!resource.exists()) {
             System.err.println("ERROR: serviceAccountKey.json not found in src/main/resources. Please add it to run the application.");
             return null; 
@@ -29,6 +31,7 @@ public class FirebaseConfig {
                 return null;
             }
 
+            // From the Firebase documentation
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();

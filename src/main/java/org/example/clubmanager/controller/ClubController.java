@@ -31,15 +31,8 @@ public class ClubController {
     private DiscordService discordService;
 
     @PostMapping
-    public Club createClub(@RequestBody Club club, @RequestParam String managerKey) throws Exception {
-        Key encryptedManagerKey = firebaseService.getKeyByPurpose("manager");
-        String MANAGER_KEY = Key.decryptKey(encryptedManagerKey);
-        
-        if (!MANAGER_KEY.equals(managerKey)) {
-            return null;
-        }
-        firebaseService.createClub(club);
-        return club;
+    public String createClub(@RequestBody Club club) throws ExecutionException, InterruptedException {
+        return firebaseService.createClub(club);
     }
 
     @GetMapping
@@ -48,8 +41,22 @@ public class ClubController {
     }
 
     @GetMapping("/{id}")
-    public Club getClub(@PathVariable String id) throws ExecutionException, InterruptedException {
-        return firebaseService.getClub(id);
+    public ResponseEntity<Club> getClub(@PathVariable String id) {
+        try {
+            System.out.println("Fetching club with ID: " + id);
+            Club club = firebaseService.getClub(id);
+            if (club != null) {
+                System.out.println("Found club: " + club.getName());
+                return ResponseEntity.ok(club);
+            } else {
+                System.out.println("Club not found in Firestore.");
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching club: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/{id}/join")
@@ -90,7 +97,7 @@ public class ClubController {
         return ResponseEntity.ok("Shared to Discord!");
     }
 
-    @PutMapping("/clubs/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateClub(@PathVariable String id, @RequestBody Club clubUpdate) {
         try {
             Key secureKey = firebaseService.getKeyByPurpose(id);

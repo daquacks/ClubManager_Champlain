@@ -15,10 +15,11 @@ public class Club {
     public Club() {
     }
 
-    public Club(String id, String name, String description, String adminUid) {
+    public Club(String id, String name, String description, String adminKey) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.adminKey = adminKey;
     }
 
     public String getId() { return id; }

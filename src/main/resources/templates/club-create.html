@@ -3,7 +3,9 @@
 <head>
     <title>Create Club | Admin</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #e4ecef; }
+        header { background-color: #3a4581; color: #fff; padding: 1rem; text-align: center; }
+        h1 { margin: 0 auto; }
         .container { max-width: 800px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
         h2 { border-bottom: 2px solid #679b9b; padding-bottom: 10px; }
@@ -38,6 +40,10 @@
 </head>
 <body>
 
+<header>
+    <h1 id="header-title">Club Creator</h1>
+</header>
+
 <div th:replace="~{fragments :: navbar}"></div>
 
 <div class="container">
@@ -51,6 +57,11 @@
         </div>
 
         <div class="form-group">
+            <label for="overview">Brief Club Overview</label>
+            <input type="text" id="overview" name="overview" maxlength="100" required>
+        </div>
+
+        <div class="form-group">
             <label for="description">Full Description</label>
             <textarea id="description" name="description" rows="6" required></textarea>
         </div>
@@ -61,13 +72,13 @@
         </div>
 
         <div class="form-group">
-            <label for="adminUid">Admin User ID (Owner)</label>
-            <input type="text" id="adminUid" name="adminUid" required>
+            <label for="adminKey">Admin Key</label>
+            <input type="text" id="adminKey" name="adminKey" required>
         </div>
 
         <div class="form-group">
-            <label for="managerUid">Manager ID</label>
-            <input type="text" id="managerUid" name="managerUid" required>
+            <label for="managerKey">Manager ID (Required to Create)</label>
+            <input type="password" id="managerKey" name="managerKey" required>
         </div>
 
         <button type="submit" class="btn-save">Create Club</button>
@@ -78,36 +89,39 @@
     document.getElementById('createClubForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
+        // 1. Grab the keys from the form
+        const managerKeyInput = document.getElementById('managerKey').value;
+        const clubAdminKey = document.getElementById('adminKey').value;
+
+        // 2. Build the Club object
         const newClub = {
             name: document.getElementById('name').value,
-            overview:document.getElementById('description').value,
+            overview: document.getElementById('overview').value,
             description: document.getElementById('description').value,
             logoUrl: document.getElementById('logoUrl').value,
-            adminUid: document.getElementById('adminUid').value
+            adminKey: clubAdminKey // This is for the server to create a NEW key entry
         };
 
-        fetch('/api/clubs?managerUid=${encodeURIComponent(managerUid)}', {
+        // 3. Send the request
+        // Note the backticks used here for the URL
+        fetch(`/api/clubs?managerKey=${encodeURIComponent(managerKeyInput)}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newClub)
         })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("Failed to create club");
-                }
+                if (response.status === 401) throw new Error("Invalid Manager Key.");
+                if (!response.ok) throw new Error("Failed to create club.");
+                return response.json();
             })
             .then(createdClub => {
-                if (!createdClub || !createdClub.id) {
-                    throw new Error("Invalid manager key.");
-                }
-                alert("Club created successfully!");
+                alert("Club and Admin Key created successfully!");
                 window.location.href = `/clubs/${createdClub.id}`;
             })
             .catch(error => {
                 console.error("Error:", error);
-                document.getElementById('status-msg').innerText = "Error creating club.";
+                document.getElementById('status-msg').innerText = error.message;
+                document.getElementById('status-msg').style.color = "red";
             });
     });
 </script>

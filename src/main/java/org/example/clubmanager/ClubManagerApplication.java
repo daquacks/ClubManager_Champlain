@@ -79,6 +79,8 @@ public class ClubManagerApplication {
                     
                     club.setOverview(overview);
 					club.setDescription(description);
+
+                    club.setAdminKey("none");
                     
                     // Set Discord link if available, otherwise default
                     club.setDiscordLink(discordLinks.getOrDefault(entry.getKey(), defaultDiscord));
@@ -90,9 +92,16 @@ public class ClubManagerApplication {
 				System.out.println("Clubs already initialized.");
 			}
 
-            Key masterKey = new Key();
-            masterKey.encryptAndSetKey();
-            firebaseService.createKey(masterKey);
+            if (firebaseService.getKeyByPurpose("manager") == null) {
+                Key managerKey = new Key();
+                managerKey.encryptAndSetKey("F9485D439D87A5FA");
+                managerKey.setPurpose("manager");
+                firebaseService.createKey(managerKey);
+                System.out.println("Added manager key to database.");
+            } else {
+                System.out.println("Manager key already exists.");
+            }
+            
             
             // Initialize Mock Events
             List<Event> existingEvents = firebaseService.getAllEvents();

@@ -3,7 +3,9 @@
 <head>
     <title>Edit Club | Admin</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #e4ecef; }
+        header { background-color: #3a4581; color: #fff; padding: 1rem; text-align: center; }
+        h1 { margin: 0 auto; }
         .container { max-width: 800px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
         h2 { border-bottom: 2px solid #679b9b; padding-bottom: 10px; }
@@ -38,6 +40,10 @@
 </head>
 <body>
 
+<header>
+    <h1 id="header-title">Club Editor</h1>
+</header>
+
 <div th:replace="~{fragments :: navbar}"></div>
 
 <div class="container">
@@ -51,7 +57,7 @@
         </div>
 
         <div class="form-group">
-            <label for="overview">Card Overview (Short Blurb)</label>
+            <label for="overview">Brief Club Overview</label>
             <input type="text" id="overview" name="overview" maxlength="100" required>
         </div>
 
@@ -66,12 +72,28 @@
         </div>
 
         <div class="form-group">
-            <label for="adminKey">Admin Key</label>
+            <label for="discordUrl">Discord URL</label>
+            <input type="url" id="discordUrl" name="discordUrl" placeholder="https://discord.com/champlain">
+        </div>
+
+        <div class="form-group">
+            <label for="adminKey">Admin Key (Required to Edit)</label>
             <input type="text" id="adminKey" name="adminKey" placeholder="Authentication Key">
         </div>
 
         <button type="submit" class="btn-save">Save Changes</button>
     </form>
+
+    <div class="danger-zone" style="margin-top: 40px; padding: 20px; border: 2px dashed #dc3545; border-radius: 8px; background-color: #fff5f5;">
+        <h3 style="color: #dc3545; margin-top: 0;">Danger Zone</h3>
+        <form id="deleteClubForm">
+            <div class="form-group">
+                <label for="managerKey">Manager Key (Required to Delete)</label>
+                <input type="password" id="managerKey" name="managerKey" placeholder="Manager Key" required>
+            </div>
+            <button type="submit" style="background-color: #dc3545; color: white; width: 100%;" class="btn-save">Permanently Delete Club</button>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -87,7 +109,7 @@
             document.getElementById('overview').value = club.overview || '';
             document.getElementById('description').value = club.description || '';
             document.getElementById('logoUrl').value = club.logoUrl || '';
-
+            document.getElementById('discordUrl').value = club.discordUrl;
             document.getElementById('loading-msg').style.display = 'none';
         })
         .catch(err => {
@@ -105,6 +127,7 @@
             overview: document.getElementById('overview').value,
             description: document.getElementById('description').value,
             logoUrl: document.getElementById('logoUrl').value,
+            discordUrl: document.getElementById('discordUrl').value,
             adminKey: document.getElementById('adminKey').value
         };
 
@@ -124,6 +147,32 @@
                 }
             })
             .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('deleteClubForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const mKey = document.getElementById('managerKey').value;
+
+        if (!confirm("Are you absolutely sure? This will delete the club and its access keys permanently.")) {
+            return;
+        }
+
+        // We pass the manager key as a query parameter
+        fetch(`/api/clubs/${clubId}?managerKey=${encodeURIComponent(mKey)}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Club deleted successfully.");
+                    window.location.href = "/clubs"; // Redirect to home/list
+                } else if (response.status === 401) {
+                    alert("Invalid Manager Key! Access Denied.");
+                } else {
+                    alert("Error deleting club.");
+                }
+            })
+            .catch(err => console.error("Error:", err));
     });
 </script>
 

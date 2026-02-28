@@ -44,8 +44,7 @@ public class AuthController {
                 firebaseService.saveUser(user);
             }
 
-            // In a real app, you might set a session cookie here or return a JWT
-            // For now, we just return success
+            // Returns login successful
             return ResponseEntity.ok().body(Map.of("message", "Login successful", "user", user));
 
         } catch (FirebaseAuthException e) {
