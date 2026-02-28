@@ -40,6 +40,4 @@ Well, the Club Manager fixes the current messy state of club-accessibility for t
 - **OpenPDF:** (self-explanatory)
 - **Discord Webhooks:** Sends an automated message to the discord server with the details of the Club (when clicking on the purple "share" button).
 
-
-
-## Implementation
+*Built with the help of Gemini.
