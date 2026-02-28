@@ -28,16 +28,16 @@ Well, the Club Manager fixes the current messy state of club-accessibility for t
 
 ## Tools
 ### Languages:
-- **Java**
-- **HTML**
-- **CSS**
-- **JavaScript**
+- **`Java`**
+- **`HTML`**
+- **`CSS`**
+- **`JavaScript`**
 
 ### API's:
-- **Spring Boot:** connects the backend with the frontend
-- **ThymeLeaf:** establishes connection between Spring Boot and HTML
-- **Firebase:** database for the clubs and the keys
-- **OpenPDF:** (self-explanatory)
-- **Discord Webhooks:** Sends an automated message to the discord server with the details of the Club (when clicking on the purple "share" button).
+- **`Spring Boot:`** connects the backend with the frontend
+- **`ThymeLeaf:`** establishes connection between Spring Boot and HTML
+- **`Firebase:`** database for the clubs and the keys
+- **`OpenPDF:`** (self-explanatory)
+- **`Discord Webhooks:`** Sends an automated message to the discord server with the details of the Club (when clicking on the purple "share" button).
 
 *Built with the help of Gemini.
