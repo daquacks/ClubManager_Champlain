@@ -10,12 +10,12 @@ Well, the Club Manager fixes the current messy state of club-accessibility for t
 #### For **default users** (team members or those looking for new clubs):
 * View all the clubs in the home menu
 * Click on the big green button to *also* view a list of all the clubs (but in a pdf format! ..Isn't that so cool?)
-* (Inside the Club Page): View each club's description and events.
+* _(Inside the Club Page):_ View each club's description and events.
 
 #### For **administrators** (executives managing the club's page):
 * Edit the overview displayed on the Home Page of the club.
-* (Inside the Club Page): Edit the title and description.
-* (Inside the Club Page): Add events in the integrated calendar (inside the Club Page).
+* _(Inside the Club Page)_: Edit the title and description.
+* _(Inside the Club Page)_: Add events in the integrated calendar (inside the Club Page).
 
 *Must use an admin key to access these features (given by the manager).
 
@@ -41,3 +41,6 @@ Well, the Club Manager fixes the current messy state of club-accessibility for t
 - **`Discord Webhooks:`** Sends an automated message to the discord server with the details of the Club (when clicking on the purple "share" button).
 
 *Built with the help of Gemini.
+
+## Awards 
+🏆Most Creative Project - Champlain Code Quest 2026
